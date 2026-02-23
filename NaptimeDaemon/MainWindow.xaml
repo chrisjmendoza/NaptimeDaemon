@@ -1,0 +1,17 @@
+﻿<Window x:Class="NaptimeDaemon.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="NaptimeDaemon" Height="200" Width="350">
+    <StackPanel Margin="20" VerticalAlignment="Center">
+        <TextBlock Text="Idle Time:" FontSize="14"/>
+        <TextBlock x:Name="IdleTimeText"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   Margin="0,5,0,15"/>
+        <Button Content="Sleep Now"
+                Width="120"
+                Height="35"
+                HorizontalAlignment="Left"
+                Click="SleepNow_Click"/>
+    </StackPanel>
+</Window>

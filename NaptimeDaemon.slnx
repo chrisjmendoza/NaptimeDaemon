@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Naptime.Daemon.Platform.Windows/Naptime.Daemon.Platform.Windows.csproj" />
+  <Project Path="NaptimeDaemon.Core.Tests/NaptimeDaemon.Core.Tests.csproj" />
+  <Project Path="NaptimeDaemon.Core/NaptimeDaemon.Core.csproj" />
+  <Project Path="NaptimeDaemon/NaptimeDaemon.App.csproj" />
+</Solution>
