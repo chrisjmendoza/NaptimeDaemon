@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -14,6 +15,7 @@ public partial class App : Application
     private MainWindow? _mainWindow;
     private PolicyAgent? _policyAgent;
     private ConfigService? _configService;
+    private WakeDiagnosticsService? _wakeDiagnostics;
     private System.Drawing.Icon? _appIcon;
     private Mutex? _singleInstanceMutex;
 
@@ -29,6 +31,9 @@ public partial class App : Application
         }
 
         base.OnStartup(e);
+
+        _wakeDiagnostics = new WakeDiagnosticsService();
+        _wakeDiagnostics.CaptureWakeInfo();
 
         InitializeTrayIcon();
 
@@ -70,6 +75,16 @@ public partial class App : Application
         var contextMenu = new ContextMenuStrip();
         contextMenu.Items.Add("Open", null, (_, _) => ShowMainWindow());
         contextMenu.Items.Add("Settings", null, (_, _) => ShowSettings());
+        contextMenu.Items.Add("View Wake Log", null, (_, _) =>
+        {
+            var path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "NaptimeDaemon",
+                "wake-log.txt");
+
+            if (File.Exists(path))
+                Process.Start("notepad.exe", path);
+        });
         contextMenu.Items.Add("Exit", null, (_, _) => ExitApplication());
 
         _notifyIcon.ContextMenuStrip = contextMenu;

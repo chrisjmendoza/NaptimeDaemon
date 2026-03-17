@@ -33,6 +33,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0"
@@ -44,7 +45,13 @@
             <Button Grid.Column="1"
                     Content="Edit Config"
                     Height="40"
+                    Margin="0,0,10,0"
                     Click="EditConfig_Click" />
+
+            <Button Grid.Column="2"
+                    Content="View Log"
+                    Height="40"
+                    Click="ViewWakeLog_Click" />
         </Grid>
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
@@ -84,5 +85,21 @@ public partial class MainWindow : Window
         };
 
         window.Show();
+    }
+
+    private void ViewWakeLog_Click(object sender, RoutedEventArgs e)
+    {
+        var path = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "NaptimeDaemon",
+            "wake-log.txt");
+
+        if (!File.Exists(path))
+        {
+            System.Windows.MessageBox.Show("Wake log not found yet.");
+            return;
+        }
+
+        Process.Start("notepad.exe", path);
     }
 }
