@@ -13,6 +13,7 @@ public partial class App : Application
     private NotifyIcon? _notifyIcon;
     private MainWindow? _mainWindow;
     private PolicyAgent? _policyAgent;
+    private ConfigService? _configService;
     private System.Drawing.Icon? _appIcon;
     private Mutex? _singleInstanceMutex;
 
@@ -31,8 +32,8 @@ public partial class App : Application
 
         InitializeTrayIcon();
 
-        var configService = new ConfigService();
-        var config = configService.Load();
+        _configService = new ConfigService();
+        var config = _configService.Load();
         _policyAgent = new PolicyAgent(config);
         _policyAgent.Start();
     }
@@ -68,6 +69,7 @@ public partial class App : Application
 
         var contextMenu = new ContextMenuStrip();
         contextMenu.Items.Add("Open", null, (_, _) => ShowMainWindow());
+        contextMenu.Items.Add("Settings", null, (_, _) => ShowSettings());
         contextMenu.Items.Add("Exit", null, (_, _) => ExitApplication());
 
         _notifyIcon.ContextMenuStrip = contextMenu;
@@ -78,12 +80,30 @@ public partial class App : Application
     {
         if (_mainWindow == null)
         {
-            _mainWindow = new MainWindow();
+            _mainWindow = new MainWindow(ApplyConfig);
             _mainWindow.Closed += (_, _) => _mainWindow = null;
         }
 
         _mainWindow.Show();
         _mainWindow.Activate();
+    }
+
+    private void ShowSettings()
+    {
+        if (_configService == null) return;
+
+        var window = new SettingsWindow(_configService);
+
+        window.ConfigSaved += ApplyConfig;
+
+        window.Show();
+    }
+
+    private void ApplyConfig(ConfigModel config)
+    {
+        _policyAgent?.Stop();
+        _policyAgent = new PolicyAgent(config);
+        _policyAgent.Start();
     }
 
     private void ExitApplication()

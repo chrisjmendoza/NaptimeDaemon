@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
@@ -14,13 +13,16 @@ public partial class MainWindow : Window
     private readonly SleepController _sleepController = new();
     private readonly DispatcherTimer _timer;
     private readonly ConfigService _configService = new();
+    private readonly Action<ConfigModel>? _onConfigSaved;
 
     private ConfigModel _config;
     private DateTime _configLastWriteUtc;
 
-    public MainWindow()
+    public MainWindow(Action<ConfigModel>? onConfigSaved = null)
     {
         InitializeComponent();
+
+        _onConfigSaved = onConfigSaved;
 
         _config = _configService.Load();
         _configLastWriteUtc = File.Exists(_configService.ConfigPath)
@@ -70,11 +72,17 @@ public partial class MainWindow : Window
 
     private void EditConfig_Click(object sender, RoutedEventArgs e)
     {
-        _ = _configService.Load();
-        Process.Start(new ProcessStartInfo
+        var window = new SettingsWindow(_configService);
+        window.ConfigSaved += config =>
         {
-            FileName = _configService.ConfigPath,
-            UseShellExecute = true
-        });
+            _config = config;
+            _configLastWriteUtc = File.Exists(_configService.ConfigPath)
+                ? File.GetLastWriteTimeUtc(_configService.ConfigPath)
+                : DateTime.MinValue;
+
+            _onConfigSaved?.Invoke(config);
+        };
+
+        window.Show();
     }
 }
