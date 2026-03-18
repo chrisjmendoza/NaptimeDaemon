@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using System.Windows.Media.Imaging;
 using NaptimeDaemon.Core;
 using NaptimeDaemon.Platform.Windows;
 
@@ -22,6 +23,8 @@ public partial class MainWindow : Window
     public MainWindow(Action<ConfigModel>? onConfigSaved = null)
     {
         InitializeComponent();
+
+        Icon = new BitmapImage(new Uri("pack://application:,,,/Assets/AppIcon.ico", UriKind.Absolute));
 
         _onConfigSaved = onConfigSaved;
 

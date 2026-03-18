@@ -1,8 +1,7 @@
 ﻿<Window x:Class="NaptimeDaemon.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="NaptimeDaemon" Height="260" Width="380"
-        Icon="Assets/AppIcon.ico">
+        Title="NaptimeDaemon" Height="260" Width="380">
     <Grid Margin="18">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

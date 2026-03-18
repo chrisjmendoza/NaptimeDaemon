@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Resources;
 using NaptimeDaemon.Core;
 using Application = System.Windows.Application;
 
@@ -17,6 +18,7 @@ public partial class App : Application
     private ConfigService? _configService;
     private WakeDiagnosticsService? _wakeDiagnostics;
     private System.Drawing.Icon? _appIcon;
+    private MemoryStream? _appIconStream;
     private Mutex? _singleInstanceMutex;
 
     private const string SingleInstanceMutexName = "Local\\NaptimeDaemon.App";
@@ -54,10 +56,18 @@ public partial class App : Application
 
     private void InitializeTrayIcon()
     {
-        var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "AppIcon.ico");
-        if (File.Exists(iconPath))
+        var iconUri = new Uri("pack://application:,,,/Assets/AppIcon.ico", UriKind.Absolute);
+        StreamResourceInfo? iconResource = GetResourceStream(iconUri);
+        if (iconResource is not null)
         {
-            using var rawIcon = new System.Drawing.Icon(iconPath);
+            _appIconStream = new MemoryStream();
+            using (iconResource.Stream)
+            {
+                iconResource.Stream.CopyTo(_appIconStream);
+            }
+            _appIconStream.Position = 0;
+
+            using var rawIcon = new System.Drawing.Icon(_appIconStream);
             _appIcon = new System.Drawing.Icon(rawIcon, new System.Drawing.Size(32, 32));
         }
         else
@@ -126,6 +136,7 @@ public partial class App : Application
         _notifyIcon!.Visible = false;
         _notifyIcon.Dispose();
         _appIcon?.Dispose();
+        _appIconStream?.Dispose();
         Shutdown();
     }
 }
